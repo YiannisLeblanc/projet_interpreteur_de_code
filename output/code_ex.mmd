@@ -1,0 +1,14 @@
+stateDiagram
+	[*] --> A1
+	A1: a ← 1
+	A1 --> A2
+	A2: If (a)
+	A2 --> A3: then
+	A3: Print (2)
+	A2 --> A4: else
+	A4: Print (3)
+	state A5 <<choice>>
+	A3 --> A5
+	A4 --> A5
+	A5: Return (a)
+	A5 --> [*]

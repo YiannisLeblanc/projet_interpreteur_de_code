@@ -36,6 +36,10 @@ typedef struct {
 // Returns the result of the evaluation of the expression expr, in Reverse Polish notation
 int eval_rpn(const int var_table[], const t_expr_rpn *expr);
 
+// ADDED BY STUDENT
+// Evaluates a sub-expression between parentheses recursively
+int eval_parenthesis_recursive(const int var_table[], t_expr_rpn *expr_rpn);
+
 // Converts an expression in infix notation to Reverse Polish notation
 t_expr_rpn shunting_yard(t_expr *expr);
 

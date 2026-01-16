@@ -121,17 +121,49 @@ void error_rpn() {
     exit(EXIT_FAILURE);
 }
 
+// ADDED BY STUDENT
+// Evaluates a sub-expression between parentheses recursively
+int eval_parenthesis_recursive(const int var_table[], t_expr_rpn *expr_rpn) {
+    t_expr_rpn sub_expr = {.expr.list = create_empty_list()};
+    while (!is_empty_expr(&expr_rpn->expr)){
+        t_expr_token token = get_next_token(&expr_rpn->expr);
+        if(token.type == PARENTHESIS){
+            if(!token.content.paren_type){
+                return eval_rpn(var_table, &sub_expr);
+            }else{
+                T val = {.type = NUMBER, .content.val = eval_parenthesis_recursive(var_table, expr_rpn)};
+                add_token(&sub_expr.expr, val);
+            }
+        }else{
+            add_token(&sub_expr.expr, token);
+        }
+    }
+    return 0;
+}
 
-////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 
 // Returns the value of the variable var
 int look_up_variable(const int var_table[], const char var) {
-    return 0; // TODO
+    if(var >= 'a' && var <= 'z'){
+        return var_table[var-'a'];
+    }
+    return 0; // TODO //END
 }
 
 // Returns the value of the token t (of type NUMBER or VARIABLE)
 int get_value(const int var_table[], const t_expr_token *t) {
-    return 0; // TODO
+    switch(t->type){
+        case VARIABLE:
+        return look_up_variable(var_table, t->content.var);
+        break;
+        case NUMBER:
+        return t->content.val;
+        break;
+        default: // EXCEPTION
+        break;
+    }
+    return 0; // TODO //END
 }
 
 // Returns the result of the evaluation of the expression expr, in Reverse Polish notation
@@ -144,28 +176,34 @@ int eval_rpn(const int var_table[], const t_expr_rpn *expr_rpn) {
 
     while (!is_empty_expr(&expr)) {
         t_expr_token token = get_next_token(&expr);
-
+        
         switch (token.type) {
             case NUMBER:
             case VARIABLE:
-                // TODO
+                T value = {.type = NUMBER, .content.val = get_value(var_table, &token)};
+                push(&stack, value);
                 break;
             
             case OPERATOR: {
-                // TODO
+                int valB = pop(&stack).content.val;
+                int valA = pop(&stack).content.val;
+                T value = {.type = NUMBER, .content.val = apply_op(token.content.op, valA, valB)};
+                push(&stack, value);
                 break;
             }
 
             case PARENTHESIS:
-                // TODO
+                t_expr_rpn sub_expr_rpn = {.expr = expr};
+                T value1 = {.type = NUMBER, .content.val = eval_parenthesis_recursive(var_table, &sub_expr_rpn)};
+                push(&stack, value1);
                 break;
         }
     }
 
-    // TODO
+    int result = get_top(&stack).content.val;
 
     destroy_stack(&stack);
-    return 0; // TODO
+    return result;
 }
 
 // Converts an expression in infix notation to Reverse Polish notation
@@ -233,9 +271,9 @@ t_expr_rpn shunting_yard(t_expr *expr) {
 }
 
 void destroy_expr(t_expr *expr) {
-    // TODO
+    destroy_list(&expr->list);
 }
 
 void destroy_expr_rpn(t_expr_rpn *expr_rpn) {
-    // TODO
+    destroy_expr(&expr_rpn->expr);
 }
