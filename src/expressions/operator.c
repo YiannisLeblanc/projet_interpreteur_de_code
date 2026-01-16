@@ -52,30 +52,42 @@ int fast_exp(int a, int b) {
 int apply_op(operator_type op, int a, int b) {
     switch (op) {
         case ADD:
-            // TODO
+            return a + b;
+            break;
         case SUB:
-            // TODO
+            return a - b;
+            break;
         case MULT:
-            // TODO
+            return a * b;
+            break;
         case DIV:
-            // TODO
+            return a / b;
+            break;
         case EXP:
-            // TODO
+            return fast_exp(a, b);
+            break;
         case LESS:
-            // TODO
+            return a < b ? 1 : 0;
+            break;
         case GREATER:
-            // TODO
+            return a > b ? 1 : 0;
+            break;
         case LEQ:
-            // TODO
+            return a <= b ? 1 : 0;
+            break;
         case GEQ:
-            // TODO
+            return a >= b ? 1 : 0;
+            break;
         case EQUAL:
-            // TODO
+            return a == b ? 1 : 0;
+            break;
         case DIFF:
-            // TODO
+            return a != b ? 1 : 0;
+            break;
         default:
             break;
     }
+    return 0;
 }
 
 void print_operator(operator_type op) {

@@ -207,7 +207,7 @@ int eval_rpn(const int var_table[], const t_expr_rpn *expr_rpn) {
 }
 
 // Converts an expression in infix notation to Reverse Polish notation
-t_expr_rpn shunting_yard(t_expr *expr) {
+t_expr_rpn shunting_yard(t_expr *expr) { //DONE
 
     t_expr_rpn expr_rpn;
     expr_rpn.expr.list = create_empty_list();
@@ -271,9 +271,9 @@ t_expr_rpn shunting_yard(t_expr *expr) {
 }
 
 void destroy_expr(t_expr *expr) {
-    destroy_list(&expr->list);
+    destroy_list(&expr->list); //DONE
 }
 
 void destroy_expr_rpn(t_expr_rpn *expr_rpn) {
-    destroy_expr(&expr_rpn->expr);
+    destroy_expr(&expr_rpn->expr); //DONE
 }
