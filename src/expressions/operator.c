@@ -49,7 +49,7 @@ int fast_exp(int a, int b) {
 }
 
 // Returns a op b
-int apply_op(operator_type op, int a, int b) {
+int apply_op(operator_type op, int a, int b) { // DONE
     switch (op) {
         case ADD:
             return a + b;
