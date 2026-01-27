@@ -222,52 +222,36 @@ void destroy_statement(const e_statement_type type, u_statement *statement) {
     if (statement == NULL)
         return;
 
-    switch (type) {
-        case Assignment: {
-            t_assignment_statement *st = &statement->assignment_st;
-            // TODO
-            break;
-        }
-        case Return: {
-            t_return_statement *st = &statement->return_st;
-            // TODO
-            break;
-        }
-        case Print: {
-            t_print_statement *st = &statement->print_st;
-            // TODO
-            break;
-        }
-        case If: {
-            t_if_statement *st = &statement->if_st;
-            // TODO
-            break;
-        }
-        case While: {
-            t_while_statement *st = &statement->while_st;
-            // TODO
-            break;
-        }
+    t_expr_rpn* expr;
+    switch(type){
+        case If:
+        destroy_ast(statement->if_st.if_true);
+        destroy_ast(statement->if_st.if_false);
+        expr = &statement->if_st.cond;
+        break;
+        case While:
+        destroy_ast(statement->while_st.block);
+        expr = &statement->while_st.cond;
+        break;
+        case Assignment:
+        expr = &statement->assignment_st.expr;
+        break;
+        case Return:
+        expr = &statement->return_st.expr;
+        break;
+        case Print:
+        expr = &statement->print_st.expr;
+        break;
+        default:
+        break;
     }
+    destroy_expr_rpn(expr);
 }
 
 void destroy_ast(t_ast *prog) {
     if (prog == NULL)
         return;
-    switch(prog->command){
-        case If:
-        destroy_ast(prog->statement.if_st.if_true);
-        destroy_ast(prog->statement.if_st.if_false);
-        break;
-        case While:
-        destroy_ast(prog->statement.while_st.block);
-        break;
-        case Assignment:
-        case Return:
-        case Print:
-        default:
-        break;
-    }
+    destroy_statement(prog->command, &prog->statement);
     destroy_ast(prog->next);
-    free(prog); //DONE
+    free(prog);
 }
