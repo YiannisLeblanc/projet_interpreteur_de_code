@@ -167,7 +167,7 @@ int get_value(const int var_table[], const t_expr_token *t) {
 }
 
 // Returns the result of the evaluation of the expression expr, in Reverse Polish notation
-int eval_rpn(const int var_table[], const t_expr_rpn *expr_rpn) {
+int eval_rpn(const int var_table[], const t_expr_rpn *expr_rpn) { //DONE
 
     t_list list_copy = expr_rpn->expr.list;
     t_expr expr = { .list = list_copy };
@@ -207,7 +207,7 @@ int eval_rpn(const int var_table[], const t_expr_rpn *expr_rpn) {
 }
 
 // Converts an expression in infix notation to Reverse Polish notation
-t_expr_rpn shunting_yard(t_expr *expr) { //DONE
+t_expr_rpn shunting_yard(t_expr *expr) {
 
     t_expr_rpn expr_rpn;
     expr_rpn.expr.list = create_empty_list();
