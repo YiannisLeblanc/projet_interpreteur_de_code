@@ -6,7 +6,7 @@
 // Recursive function, evaluates the program
 // Returns true if a Return statement was reached, stop the execution
 // Returns false if the end of a block was reached
-bool run_aux(int var_value[], const t_ast *prog) {
+bool run_aux(int var_value[], const t_ast *prog) { // DONE
     bool returnValue = false;
     t_ast* tempProg = prog;
     while(tempProg!=NULL && !returnValue){
@@ -45,7 +45,7 @@ bool run_aux(int var_value[], const t_ast *prog) {
     return returnValue;
 }
 
-void run(t_ast *prog) {
+void run(t_ast *prog) { // DONE
     int var_value['z'-'a'+1];
     run_aux(var_value, prog);
 }

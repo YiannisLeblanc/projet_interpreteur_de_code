@@ -31,10 +31,11 @@ t_ast *parse_aux(const t_prog_token_list *list, unsigned int *i) {
             t_assignment_statement st;
             st.var = token.content.var;
             (*i)++;
-            if(ptl_get(list, *i).token_type!=Assignment){
+            /*if(ptl_get(list, *i).token_type!=KW_ASSIGN){
                 printf("Variable non suivie par une affectation !\n");
+                printf("Token numéro : %u\n",*i);
                 return NULL;
-            }
+            }*/
             (*i)++;
             get_expr(&st.expr, list, i);
             prog->command = Assignment;
@@ -46,11 +47,10 @@ t_ast *parse_aux(const t_prog_token_list *list, unsigned int *i) {
                 case KW_PRINT: {
                     t_print_statement st;
                     (*i)++;
-                    if(ptl_get(list, *i).token_type != PT_EXPR){
+                    /*if(ptl_get(list, *i).token_type != PT_EXPR){
                         printf("Print n'est pas suivi d'une expression !\n");
                         return NULL;
-                    }
-                    (*i)++;
+                    }*/
                     get_expr(&st.expr,list , i);
                     prog->command = Print;
                     prog->statement.print_st = st;
@@ -59,11 +59,10 @@ t_ast *parse_aux(const t_prog_token_list *list, unsigned int *i) {
                 case KW_RETURN: {
                     t_return_statement st;
                     (*i)++;
-                    if(ptl_get(list, *i).token_type != PT_EXPR){
+                    /*if(ptl_get(list, *i).token_type != PT_EXPR){
                         printf("Return n'est pa suivi d'une expression !\n");
                         return NULL;
-                    }
-                    (*i)++;
+                    }*/
                     get_expr(&st.expr,list , i);
                     prog->command = Return;
                     prog->statement.return_st = st;
@@ -74,11 +73,10 @@ t_ast *parse_aux(const t_prog_token_list *list, unsigned int *i) {
                     st.if_true  = NULL;
                     st.if_false = NULL;
                     (*i)++;
-                    if(ptl_get(list, *i).token_type != PT_EXPR){
+                    /*if(ptl_get(list, *i).token_type != PT_EXPR){
                         printf("IF n'est pas suivi d'une expression !\n");
                         return NULL;
-                    }
-                    (*i)++;
+                    }*/
                     get_expr(&st.cond,list , i);
                     st.if_true = parse_aux(list, i);
                     st.if_false = parse_aux(list, i);
@@ -90,11 +88,10 @@ t_ast *parse_aux(const t_prog_token_list *list, unsigned int *i) {
                     t_while_statement st;
                     st.block = NULL;
                     (*i)++;
-                    if(ptl_get(list, *i).token_type != PT_EXPR){
+                    /*if(ptl_get(list, *i).token_type != PT_EXPR){
                         printf("While n'est pas suivi d'une expression !\n");
                         return NULL;
-                    }
-                    (*i)++;
+                    }*/
                     get_expr(&st.cond, list, i);
                     st.block = parse_aux(list, i);
                     prog->command = While;
