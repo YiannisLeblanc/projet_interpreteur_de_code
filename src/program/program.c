@@ -189,7 +189,6 @@ void print_ast(const t_ast *prog, const char *file_name) {
 
 void run_program(const char *s) {
     t_prog_token_list list = lex(s);
-    
     t_ast *prog = parse(&list);
     ptl_destroy_list(&list);
 
@@ -197,7 +196,6 @@ void run_program(const char *s) {
     
     destroy_ast(prog);
 }
-
 
 void export_program_ast(const char *s, const char *source_file_name) {
     t_prog_token_list list = lex(s);
