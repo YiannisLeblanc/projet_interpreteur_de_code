@@ -38,45 +38,98 @@ bool process_keyword(const char **p_s, const e_keyword keyword_type, t_prog_toke
         strcpy(kwStr, "print");
         break;
         default:
-        break;
+        return false;
     }
     unsigned int size = strlen(kwStr);
     if(str_eq(*p_s, kwStr, size)){
-            *p_s += size;
-            return true;
-        }
+        token->token_type = PT_KEYWORD;
+        token->content.keyword = keyword_type;
+        *p_s += size;
+        return true;
+    }
     return false;
 }
 
+#define TABULATION_SIZE 4
+
+// ADDED BY STUDENT
+int process_indentation(const char **s){
+    if(**s == '\t'){
+        (*s)++;
+        return 1+process_indentation(s);
+    } else if(**s == ' '){
+        (*s)++;
+        for(int i = 0 ; i < TABULATION_SIZE-1 ; i++){
+            if(**s != ' ') return 0;
+
+            (*s)++;
+        }
+        return 1+process_indentation(s);
+    } else {
+        return 0;
+    }
+}
+
 t_prog_token_list lex(const char *s) {
-    printf("%s\n", s);
     t_prog_token_list list = ptl_create_empty_list();
 
 #define NB_KEYWORDS 7
     static const e_keyword keywords[NB_KEYWORDS] = { KW_ASSIGN, KW_IF, KW_ELSE, KW_WHILE, KW_ENDBLOCK, KW_RETURN, KW_PRINT };
-#define TAB_SIZE 4
-    unsigned int indentation = 0;
-    for (;*s != '\0';s++) {
-        if ((*s == ' ') || *s == '\n') {
-
-            // TODO
-
+    unsigned int previousIndentation = 0;
+    unsigned int currentIndentation = 0;
+    bool expectingExpression = false;
+    while(*s != '\0') {
+        if (*s == '#'){
+            while(*s != '\n' && *s != '\0'){
+                s++;
+            }
+        } else if(*s == '\n'){
             s++;
-            continue;
-        }
-        else {
-
-            if (0 /* TODO */) {
+            currentIndentation = process_indentation(&s);
+            if(currentIndentation < previousIndentation) {
                 t_prog_token token;
                 token.token_type = PT_KEYWORD;
                 token.content.keyword = KW_ENDBLOCK;
-                // TODO
-                continue;
+                for(int i = 0 ; i < (previousIndentation-currentIndentation) ; i++){
+                    ptl_push_back(&list, token);
+                }
+            }
+            previousIndentation = currentIndentation;
+            currentIndentation = 0;
+        } else if(*s==' '){
+            s++;
+        } else if((*s >= 'a' && *s <= 'z') && !(s[1] >= 'a' && s[1] <= 'z') && !expectingExpression){
+            t_prog_token token = {.token_type = PT_VAR, .content.var = *s};
+            
+                ptl_push_back(&list, token);
+            
+            s++;
+        } else if(expectingExpression){
+            t_prog_token token;
+            token.token_type = PT_EXPR;
+            t_expr expr = parse_expr(&s);
+            token.content.expr_rpn = shunting_yard(&expr);
+            ptl_push_back(&list, token);
+            expectingExpression = false;
+        } else {
+            t_prog_token token;
+            for(int i = 0 ; i < NB_KEYWORDS && !expectingExpression; i++){
+                if(process_keyword(&s, keywords[i], &token)){
+                    if(token.content.keyword == KW_ELSE){
+                        t_prog_token last_token = ptl_get(&list, list.size-1);
+                        if (last_token.token_type == PT_KEYWORD && last_token.content.keyword == KW_ENDBLOCK){
+                            ptl_set(&list, list.size-1, token);
+                        } else {
+                            ptl_push_back(&list, token);
+                        }
+                    } else {
+                        ptl_push_back(&list, token);
+                        expectingExpression = true;
+                    }
+                }
             }
         }
-        // TODO
-
+        
     }
-    
     return list;
 }
